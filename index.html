@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Solicitar Corrida • Maringá PR</title>
+
+  <!-- Mapbox GL JS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+  <style>
+    :root {
+      --bg:#0b0f12; --panel:#111820; --panel-2:#0f141a; --ink:#e9eef3;
+      --muted:#9fb0bf; --brand:#34c759; --brand-2:#2bb44f; --danger:#ff5252;
+      --stroke:#1f2933; --accent:#1b2836;
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;background:linear-gradient(180deg,#0b0f12,#0b0f12 40%,#0c1218);color:var(--ink);font:500 16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
+    .shell{max-width:1100px;margin:0 auto;padding:20px}
+    header{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+    .logo{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;background:radial-gradient(100% 100% at 10% 10%,#1a2a3a,#0c141d);border:1px solid var(--stroke);box-shadow:0 10px 30px #000 inset,0 20px 50px rgba(0,0,0,.4)}
+    .logo svg{opacity:.92} header h1{font-size:18px;margin:0}
+    header .sub{color:var(--muted);font-size:12px;margin-top:2px}
+    .grid{display:grid;grid-template-columns:420px 1fr;gap:16px}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}}
+    .card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--stroke);border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+    .row{display:grid;gap:12px}
+    .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field{display:grid;gap:8px} label{font-size:13px;color:var(--muted)}
+    input,textarea,button,select{width:100%;background:var(--accent);color:var(--ink);border:1px solid #243240;border-radius:10px;padding:12px;outline:none}
+    input::placeholder,textarea::placeholder{color:#8096aa} textarea{min-height:80px;resize:vertical}
+    .inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .btn{cursor:pointer;border:none;font-weight:700;letter-spacing:.2px;transition:transform .06s,filter .15s,background .2s}
+    .btn:active{transform:translateY(1px)} .btn-primary{background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#04120a}
+    .btn-ghost{background:#15212e;color:#d8e6f3;border:1px solid #213142}
+    .btn-danger{background:var(--danger);color:#160606}
+    .btn-sm{padding:10px 12px;border-radius:10px;font-size:14px}
+    .btn-lg{padding:14px;border-radius:12px;font-size:16px}
+    .hint{font-size:12px;color:var(--muted)}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;background:#0e1620;border:1px solid #1b2735;border-radius:12px;color:#cfe3f5;font-size:14px}
+    .kpis{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .kpi{display:grid;gap:4px;padding:10px 12px;background:#0f1822;border:1px solid #1b2a3a;border-radius:12px;min-width:120px}
+    .kpi small{color:#92aabf;font-size:12px} .kpi strong{font-size:18px}
+    #map{width:100%;height:560px;border-radius:14px;overflow:hidden}
+    .footer{margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .toast{position:fixed;right:16px;bottom:16px;background:#0e1a11;border:1px solid #1f3b26;color:#b9f6c4;padding:12px 14px;border-radius:12px;display:none;z-index:9999}
+    .tarifas{font-size:13px;color:#bcd1e4;background:#0e1620;border:1px solid #1b2735;border-radius:12px;padding:10px 12px}
+    .pill{display:inline-block;margin-right:6px;margin-top:6px;padding:6px 10px;border-radius:999px;border:1px solid #203042;background:#101a24;color:#dce9f5;font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="logo" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#34c759"><path d="M12 2l3 7h7l-5.5 4.1L18.5 20 12 15.9 5.5 20 7.5 13.1 2 9h7l3-7z"/></svg>
+      </div>
+      <div>
+        <h1>Solicitar Corrida — Maringá, PR</h1>
+        <div class="sub">Dentro de Maringá: R$ 2,00/km + R$ 0,50/min. Fora de Maringá: R$ 3,00/km.</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Painel esquerdo -->
+      <section class="card">
+        <form id="rideForm" class="row" autocomplete="off">
+          <div class="tarifas">
+            <strong>Regras de preço:</strong>
+            <div class="pill">🟢 Dentro de Maringá: R$ 2,00 por km + R$ 0,50 por minuto</div>
+            <div class="pill">🔵 Fora de Maringá: R$ 3,00 por km (sem minuto)</div>
+            <div class="hint" style="margin-top:6px">Detecção automática pelo endereço. Se origem e destino estiverem em Maringá aplica a tarifa interna. Qualquer destino fora muda para “fora de Maringá”.</div>
+          </div>
+
+          <div class="pair">
+            <div class="field">
+              <label for="nome">Nome</label>
+              <input id="nome" name="nome" placeholder="Seu nome" required />
+            </div>
+            <div class="field">
+              <label for="telefone">Telefone (WhatsApp)</label>
+              <input id="telefone" name="telefone" inputmode="tel" placeholder="(44) xxxxx-xxxx" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="origem">Onde você está</label>
+            <div class="inline">
+              <input id="origem" name="origem" list="lista-origem" placeholder="Endereço de origem (Maringá)" required />
+              <datalist id="lista-origem"></datalist>
+              <button type="button" class="btn btn-sm btn-ghost" id="btnGeo">Usar minha localização</button>
+            </div>
+            <div class="hint">Digite e selecione na lista para precisão.</div>
+          </div>
+
+          <div class="field">
+            <label for="destino">Para onde vai</label>
+            <input id="destino" name="destino" list="lista-destino" placeholder="Endereço de destino" required />
+            <datalist id="lista-destino"></datalist>
+          </div>
+
+          <div class="pair">
+            <div class="field">
+              <label for="quando">Horário desejado</label>
+              <input id="quando" name="quando" type="datetime-local" required />
+            </div>
+            <div class="field">
+              <label for="observacoes">Observações</label>
+              <input id="observacoes" name="observacoes" placeholder="Portaria, bloco, quantidade de sacolas..." />
+            </div>
+          </div>
+
+          <div class="kpis" id="kpis" hidden>
+            <div class="kpi"><small>Distância</small><strong id="kpiDist">—</strong></div>
+            <div class="kpi"><small>Duração</small><strong id="kpiTempo">—</strong></div>
+            <div class="kpi"><small>Tipo</small><strong id="kpiTipo">—</strong></div>
+            <div class="kpi"><small>Estimativa</small><strong id="kpiPreco">—</strong></div>
+          </div>
+
+          <div class="footer">
+            <div class="badge" id="statusBadge" aria-live="polite">Pronto para traçar rota.</div>
+            <div class="inline">
+              <button type="button" id="btnRota" class="btn btn-lg btn-ghost">Traçar rota</button>
+              <button type="submit" class="btn btn-lg btn-primary">Enviar pedido</button>
+              <button type="button" id="btnLimpar" class="btn btn-lg btn-danger">Limpar</button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- Mapa -->
+      <section class="card">
+        <div id="map" role="region" aria-label="Mapa com rota"></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ======= CONFIG: PREENCHA =======
+    const MAPBOX_TOKEN    = "pk.eyJ1Ijoic3VwcmVtb3dpbGwiLCJhIjoiY21keHUydHM2MDEzYjJqcHMyNjlkbWVvbyJ9.FTzTaKQvyAZ3ihSNyAYFGg";
+    const N8N_WEBHOOK_URL = "https://criadordigital-n8n-webhook.v05hji.easypanel.host/webhook/corrida";
+    // ======= TARIFAS (Maringá) ======
+    const CIDADE_ALVO = "Maringá";
+    const PRECO_INTERNO_POR_KM = 2.00;  // dentro de Maringá
+    const PRECO_INTERNO_POR_MIN = 0.50; // dentro de Maringá
+    const PRECO_FORA_POR_KM = 3.00;     // fora de Maringá
+    // =================================
+
+    mapboxgl.accessToken = MAPBOX_TOKEN;
+
+    // Estado
+    let map, origemMarker, destinoMarker, routeId = "rota-principal";
+    let origemCoords = null, destinoCoords = null, rotaResumo = null;
+    let origemContexto = null, destinoContexto = null;
+
+    // Mapa
+    initMap();
+    function initMap(){
+      map = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/mapbox/streets-v12",
+        center: [-51.9333, -23.4205], // Maringá
+        zoom: 12
+      });
+      map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), "top-right");
+      map.addControl(new mapboxgl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: false }), "top-right");
+    }
+
+    // Utils
+    const $ = s => document.querySelector(s);
+    const badge = m => $("#statusBadge").textContent = m;
+    const toast = (m, ok=true)=>{ const el=$("#toast"); el.textContent=m; el.style.display="block"; el.style.borderColor= ok?"#1f3b26":"#522222"; el.style.background= ok?"#0e1a11":"#1e0e0e"; setTimeout(()=>el.style.display="none",4200); };
+    const kmFmt = v => (v/1000).toFixed(2) + " km";
+    const minFmt = v => Math.round(v/60) + " min";
+    const money = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+
+    function removeDiacritics(str){ return (str||"").normalize("NFD").replace(/\p{Diacritic}/gu,""); }
+    function contemCidadeAlvo(place){
+      const s = removeDiacritics(String(place||"").toLowerCase());
+      const alvo = removeDiacritics(CIDADE_ALVO.toLowerCase());
+      return s.includes(alvo);
+    }
+
+    // Autocomplete
+    async function sugestoesEndereco(q, datalistId){
+      if(!q || q.length<3) return;
+      try{
+        const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?autocomplete=true&limit=5&language=pt-BR&access_token=${MAPBOX_TOKEN}`;
+        const r=await fetch(url); const j=await r.json();
+        const list=document.getElementById(datalistId); list.innerHTML="";
+        (j.features||[]).forEach(f=>{ const opt=document.createElement("option"); opt.value=f.place_name; list.appendChild(opt); });
+      }catch{}
+    }
+    $("#origem").addEventListener("input", e => sugestoesEndereco(e.target.value,"lista-origem"));
+    $("#destino").addEventListener("input", e => sugestoesEndereco(e.target.value,"lista-destino"));
+
+    // Geo
+    $("#btnGeo").addEventListener("click", ()=>{
+      if(!navigator.geolocation){ toast("Geolocalização indisponível", false); return; }
+      navigator.geolocation.getCurrentPosition(async pos=>{
+        const { latitude:lat, longitude:lon } = pos.coords;
+        origemCoords=[lon,lat];
+        try{
+          const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${lon},${lat}.json?language=pt-BR&access_token=${MAPBOX_TOKEN}`;
+          const r=await fetch(url); const j=await r.json();
+          const feat=j.features?.[0]; const place=feat?.place_name || `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+          origemContexto = feat;
+          $("#origem").value=place;
+          posicionarMarcador("origem", origemCoords, place);
+          badge("Origem definida.");
+          ajustarVisao();
+        }catch{}
+      },()=> toast("Não foi possível obter localização", false),{enableHighAccuracy:true,timeout:10000});
+    });
+
+    // Rota
+    $("#btnRota").addEventListener("click", async ()=>{ await calcularERedesenharRota(); });
+
+    async function calcularERedesenharRota(){
+      badge("Calculando rota...");
+      const origem = $("#origem").value.trim();
+      const destino = $("#destino").value.trim();
+      if(!origem||!destino){ toast("Informe origem e destino", false); badge("Informe origem e destino."); return; }
+
+      // Geocode completo para captar contexto de cidade
+      const geoO = await geocodeCompleto(origem);
+      const geoD = await geocodeCompleto(destino);
+      origemCoords = geoO?.center || null; destinoCoords = geoD?.center || null;
+      origemContexto = geoO; destinoContexto = geoD;
+      if(!origemCoords || !destinoCoords){ toast("Endereços inválidos", false); badge("Falha ao geocodificar."); return; }
+
+      await desenharRota(origemCoords, destinoCoords);
+      atualizarKPIs();
+    }
+
+    async function geocodeCompleto(texto){
+      try{
+        const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(texto)}.json?limit=1&language=pt-BR&access_token=${MAPBOX_TOKEN}`;
+        const r=await fetch(url); const j=await r.json();
+        return j.features?.[0] || null;
+      }catch{ return null; }
+    }
+
+    async function desenharRota([lonA,latA],[lonB,latB]){
+      try{
+        const url=`https://api.mapbox.com/directions/v5/mapbox/driving/${lonA},${latA};${lonB},${latB}?geometries=geojson&overview=full&language=pt-BR&access_token=${MAPBOX_TOKEN}`;
+        const r=await fetch(url); const j=await r.json();
+        const route=j.routes?.[0]; if(!route) throw new Error("Sem rota");
+        const line=route.geometry;
+        rotaResumo={ distancia:route.distance, duracao:route.duration };
+
+        if(map.getSource(routeId)){
+          map.getSource(routeId).setData({type:"Feature",geometry:line});
+        }else{
+          map.addSource(routeId,{type:"geojson",data:{type:"Feature",geometry:line}});
+          map.addLayer({ id:routeId, type:"line", source:routeId, layout:{ "line-join":"round","line-cap":"round" }, paint:{ "line-color":"#34c759","line-width":5,"line-opacity":.9 }});
+        }
+
+        posicionarMarcador("origem",[lonA,latA],$("#origem").value);
+        posicionarMarcador("destino",[lonB,latB],$("#destino").value);
+        ajustarVisao();
+        badge("Rota pronta.");
+      }catch(e){
+        toast("Não foi possível traçar a rota", false);
+        badge("Erro ao obter rota.");
+      }
+    }
+
+    function posicionarMarcador(tipo,[lon,lat],titulo){
+      const color = tipo==="origem" ? "#2bb44f" : "#1ea7fd";
+      const el=document.createElement("div");
+      el.style.width="16px"; el.style.height="16px"; el.style.borderRadius="50%";
+      el.style.background=color; el.style.boxShadow="0 0 0 3px rgba(255,255,255,.3)";
+      const marker=new mapboxgl.Marker({element:el}).setLngLat([lon,lat]).setPopup(new mapboxgl.Popup({offset:24}).setText(titulo));
+      if(tipo==="origem"){ if(origemMarker) origemMarker.remove(); origemMarker=marker; } else { if(destinoMarker) destinoMarker.remove(); destinoMarker=marker; }
+      marker.addTo(map);
+    }
+    function ajustarVisao(){
+      const b=new mapboxgl.LngLatBounds();
+      if(origemMarker) b.extend(origemMarker.getLngLat());
+      if(destinoMarker) b.extend(destinoMarker.getLngLat());
+      if(!b.isEmpty()) map.fitBounds(b,{padding:60,duration:600,maxZoom:14});
+    }
+
+    // Tarifação
+    function tipoCorrida(){
+      const oEmMGA = contemCidadeAlvo(origemContexto?.place_name);
+      const dEmMGA = contemCidadeAlvo(destinoContexto?.place_name);
+      return (oEmMGA && dEmMGA) ? "dentro" : "fora";
+    }
+    function calcularPreco(){
+      if(!rotaResumo) return null;
+      const km = rotaResumo.distancia/1000;
+      const min = Math.round(rotaResumo.duracao/60);
+      if(tipoCorrida()==="dentro"){
+        return { tipo:"Dentro de Maringá", valor: km*PRECO_INTERNO_POR_KM + min*PRECO_INTERNO_POR_MIN, km, min };
+      }else{
+        return { tipo:"Fora de Maringá", valor: km*PRECO_FORA_POR_KM, km, min };
+      }
+    }
+    function atualizarKPIs(){
+      if(!rotaResumo) return;
+      const fare = calcularPreco();
+      $("#kpis").hidden=false;
+      $("#kpiDist").textContent = kmFmt(rotaResumo.distancia);
+      $("#kpiTempo").textContent = minFmt(rotaResumo.duracao);
+      $("#kpiTipo").textContent  = fare?.tipo || "—";
+      $("#kpiPreco").textContent = fare ? money(fare.valor) : "—";
+    }
+
+    // Envio ao webhook
+    $("#rideForm").addEventListener("submit", async (ev)=>{
+      ev.preventDefault();
+      const nome=$("#nome").value.trim();
+      const telefone=$("#telefone").value.trim();
+      const origemTxt=$("#origem").value.trim();
+      const destinoTxt=$("#destino").value.trim();
+      const quando=$("#quando").value;
+      const observacoes=$("#observacoes").value.trim();
+      if(!origemTxt||!destinoTxt||!quando||!nome){ toast("Preencha os campos obrigatórios", false); return; }
+
+      if(!rotaResumo){ await calcularERedesenharRota(); if(!rotaResumo){ toast("Calcule a rota antes de enviar", false); return; } }
+
+      badge("Enviando ao webhook...");
+      const [oLon,oLat]=origemCoords||[null,null];
+      const [dLon,dLat]=destinoCoords||[null,null];
+
+      const rotaLink = (oLat&&oLon&&dLat&&dLon)
+        ? `https://www.google.com/maps/dir/?api=1&origin=${oLat},${oLon}&destination=${dLat},${dLon}&travelmode=driving`
+        : null;
+
+      const quandoISO = quando ? new Date(quando) : null;
+      const quandoBR = quandoISO ? new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short',timeZone:'America/Sao_Paulo'}).format(quandoISO) : "";
+
+      const fare = calcularPreco();
+
+      const payload = {
+        nome, telefone,
+        origem: { endereco: origemTxt, lon:oLon, lat:oLat, em_maringa: contemCidadeAlvo(origemContexto?.place_name) },
+        destino: { endereco: destinoTxt, lon:dLon, lat:dLat, em_maringa: contemCidadeAlvo(destinoContexto?.place_name) },
+        quando: { raw: quando, ptBR: quandoBR },
+        observacoes,
+        rota: {
+          distancia_m: rotaResumo?.distancia ?? null,
+          duracao_s:   rotaResumo?.duracao ?? null,
+          distancia_km_fmt: rotaResumo ? (rotaResumo.distancia/1000).toFixed(2) : null,
+          duracao_min_fmt:  rotaResumo ? Math.round(rotaResumo.duracao/60) : null,
+          link_motorista: rotaLink
+        },
+        preco: fare ? {
+          tipo: fare.tipo,
+          valor_brl: Number(fare.valor.toFixed(2)),
+          regras: {
+            dentro:{ km: PRECO_INTERNO_POR_KM, min: PRECO_INTERNO_POR_MIN },
+            fora:{ km: PRECO_FORA_POR_KM }
+          }
+        } : null,
+        meta:{ cidade:"Maringá-PR", origem_app:"app-html-mobilidade", enviado_em_iso:new Date().toISOString() }
+      };
+
+      try{
+        const resp = await fetch(N8N_WEBHOOK_URL,{ method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload) });
+        if(!resp.ok) throw new Error("HTTP "+resp.status);
+        toast("Pedido enviado ao webhook.");
+        badge("Enviado com sucesso.");
+      }catch(e){
+        toast("Falha no webhook. Revise a URL.", false);
+        badge("Erro no envio.");
+      }
+    });
+
+    // Limpar
+    $("#btnLimpar").addEventListener("click",()=>{
+      $("#rideForm").reset();
+      $("#kpis").hidden=true; rotaResumo=null; origemCoords=null; destinoCoords=null;
+      origemContexto=null; destinoContexto=null;
+      if(map.getSource(routeId)){ map.removeLayer(routeId); map.removeSource(routeId); }
+      if(origemMarker){ origemMarker.remove(); origemMarker=null; }
+      if(destinoMarker){ destinoMarker.remove(); destinoMarker=null; }
+      badge("Pronto para traçar rota.");
+    });
+
+    // Reforço: se o usuário alterar texto, força novo geocode
+    $("#origem").addEventListener("change",()=>{ origemCoords=null; origemContexto=null; });
+    $("#destino").addEventListener("change",()=>{ destinoCoords=null; destinoContexto=null; });
+  </script>
+</body>
+</html>
