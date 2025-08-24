@@ -15,38 +15,500 @@
       --muted:#9fb0bf; --brand:#34c759; --brand-2:#2bb44f; --danger:#ff5252;
       --stroke:#1f2933; --accent:#1b2836;
     }
-    *{box-sizing:border-box} html,body{height:100%}
-    body{margin:0;background:linear-gradient(180deg,#0b0f12,#0b0f12 40%,#0c1218);color:var(--ink);font:500 16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu}
-    .shell{max-width:1100px;margin:0 auto;padding:20px}
-    header{display:flex;gap:14px;align-items:center;margin-bottom:14px}
-    .logo{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;background:radial-gradient(100% 100% at 10% 10%,#1a2a3a,#0c141d);border:1px solid var(--stroke);box-shadow:0 10px 30px #000 inset,0 20px 50px rgba(0,0,0,.4)}
-    .logo svg{opacity:.92} header h1{font-size:18px;margin:0}
-    header .sub{color:var(--muted);font-size:12px;margin-top:2px}
-    .grid{display:grid;grid-template-columns:420px 1fr;gap:16px}
-    @media(max-width:980px){.grid{grid-template-columns:1fr}}
-    .card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--stroke);border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.35)}
-    .row{display:grid;gap:12px}
-    .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .field{display:grid;gap:8px} label{font-size:13px;color:var(--muted)}
-    input,textarea,button,select{width:100%;background:var(--accent);color:var(--ink);border:1px solid #243240;border-radius:10px;padding:12px;outline:none}
-    input::placeholder,textarea::placeholder{color:#8096aa} textarea{min-height:80px;resize:vertical}
-    .inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .btn{cursor:pointer;border:none;font-weight:700;letter-spacing:.2px;transition:transform .06s,filter .15s,background .2s}
-    .btn:active{transform:translateY(1px)} .btn-primary{background:linear-gradient(180deg,var(--brand),var(--brand-2));color:#04120a}
-    .btn-ghost{background:#15212e;color:#d8e6f3;border:1px solid #213142}
-    .btn-danger{background:var(--danger);color:#160606}
-    .btn-sm{padding:10px 12px;border-radius:10px;font-size:14px}
-    .btn-lg{padding:14px;border-radius:12px;font-size:16px}
-    .hint{font-size:12px;color:var(--muted)}
-    .badge{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;background:#0e1620;border:1px solid #1b2735;border-radius:12px;color:#cfe3f5;font-size:14px}
-    .kpis{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .kpi{display:grid;gap:4px;padding:10px 12px;background:#0f1822;border:1px solid #1b2a3a;border-radius:12px;min-width:120px}
-    .kpi small{color:#92aabf;font-size:12px} .kpi strong{font-size:18px}
-    #map{width:100%;height:560px;border-radius:14px;overflow:hidden}
-    .footer{margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-    .toast{position:fixed;right:16px;bottom:16px;background:#0e1a11;border:1px solid #1f3b26;color:#b9f6c4;padding:12px 14px;border-radius:12px;display:none;z-index:9999}
-    .tarifas{font-size:13px;color:#bcd1e4;background:#0e1620;border:1px solid #1b2735;border-radius:12px;padding:10px 12px}
-    .pill{display:inline-block;margin-right:6px;margin-top:6px;padding:6px 10px;border-radius:999px;border:1px solid #203042;background:#101a24;color:#dce9f5;font-size:12px}
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100%;
+    }
+    
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #0b0f12, #0b0f12 40%, #0c1218);
+      color: var(--ink);
+      font: 500 clamp(14px, 2.4vw, 16px)/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu;
+    }
+    
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(12px, 3vw, 20px);
+    }
+    
+    header {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(100% 100% at 10% 10%, #1a2a3a, #0c141d);
+      border: 1px solid var(--stroke);
+      box-shadow: 0 10px 30px #000 inset, 0 20px 50px rgba(0,0,0,.4);
+    }
+    
+    .logo svg {
+      opacity: .92;
+    }
+    
+    header h1 {
+      font-size: clamp(16px, 3.8vw, 20px);
+      margin: 0;
+    }
+    
+    header .sub {
+      color: var(--muted);
+      font-size: clamp(11px, 2.2vw, 12px);
+      margin-top: 2px;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 16px;
+    }
+    
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--stroke);
+      border-radius: 14px;
+      padding: clamp(12px, 3vw, 16px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    }
+    
+    .row {
+      display: grid;
+      gap: 12px;
+    }
+    
+    .pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+    
+    label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    
+    input, textarea, button, select {
+      width: 100%;
+      background: var(--accent);
+      color: var(--ink);
+      border: 1px solid #243240;
+      border-radius: 10px;
+      padding: 12px;
+      outline: none;
+      font-size: 16px; /* Evita zoom no iOS */
+      min-height: 44px; /* Toque adequado */
+      touch-action: manipulation;
+    }
+    
+    input:focus, textarea:focus, button:focus, select:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 2px rgba(52, 199, 89, 0.2);
+    }
+    
+    input::placeholder, textarea::placeholder {
+      color: #8096aa;
+    }
+    
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    /* Datalist responsivo */
+    datalist {
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
+    .inline {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      cursor: pointer;
+      border: none;
+      font-weight: 700;
+      letter-spacing: .2px;
+      transition: transform .06s, filter .15s, background .2s;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+    }
+    
+    .btn:active {
+      transform: translateY(1px);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+      color: #04120a;
+    }
+    
+    .btn-ghost {
+      background: #15212e;
+      color: #d8e6f3;
+      border: 1px solid #213142;
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      color: #160606;
+    }
+    
+    .btn-sm {
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      min-height: 44px;
+    }
+    
+    .btn-lg {
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      min-height: 48px;
+    }
+    
+    .hint {
+      font-size: clamp(11px, 2.2vw, 12px);
+      color: var(--muted);
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #0e1620;
+      border: 1px solid #1b2735;
+      border-radius: 12px;
+      color: #cfe3f5;
+      font-size: clamp(12px, 2.5vw, 14px);
+    }
+    
+    .kpis {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    
+    .kpi {
+      display: grid;
+      gap: 4px;
+      padding: 10px 12px;
+      background: #0f1822;
+      border: 1px solid #1b2a3a;
+      border-radius: 12px;
+      min-width: 120px;
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .kpi small {
+      color: #92aabf;
+      font-size: clamp(10px, 2vw, 12px);
+    }
+    
+    .kpi strong {
+      font-size: clamp(14px, 3vw, 18px);
+      white-space: nowrap;
+    }
+    
+    #map {
+      width: 100%;
+      height: 560px;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    
+    .footer {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .toast {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      background: #0e1a11;
+      border: 1px solid #1f3b26;
+      color: #b9f6c4;
+      padding: 12px 14px;
+      border-radius: 12px;
+      display: none;
+      z-index: 9999;
+      max-width: calc(100vw - 32px);
+      word-wrap: break-word;
+    }
+    
+    .tarifas {
+      font-size: clamp(12px, 2.3vw, 13px);
+      color: #bcd1e4;
+      background: #0e1620;
+      border: 1px solid #1b2735;
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    
+    .pill {
+      display: inline-block;
+      margin-right: 6px;
+      margin-top: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #203042;
+      background: #101a24;
+      color: #dce9f5;
+      font-size: clamp(10px, 2.1vw, 12px);
+    }
+    
+    /* Responsividade - Tablet */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      
+      #map {
+        height: 50vh;
+        min-height: 300px;
+      }
+      
+      .card {
+        padding: 12px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      }
+      
+      .pair {
+        gap: 8px;
+      }
+      
+      .footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      
+      .footer .inline {
+        justify-content: center;
+      }
+      
+      .kpis {
+        gap: 6px;
+      }
+      
+      .kpi {
+        min-width: calc(50% - 3px);
+        padding: 8px 10px;
+      }
+    }
+    
+    /* Responsividade - Mobile */
+    @media (max-width: 480px) {
+      .shell {
+        padding: 12px;
+      }
+      
+      header {
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      
+      .logo {
+        width: 36px;
+        height: 36px;
+      }
+      
+      #map {
+        height: 55vh;
+        min-height: 280px;
+        border-radius: 10px;
+      }
+      
+      .card {
+        padding: 10px;
+        border-radius: 10px;
+      }
+      
+      .row {
+        gap: 10px;
+      }
+      
+      .pair {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      
+      .field {
+        gap: 6px;
+      }
+      
+      input, textarea, button, select {
+        padding: 14px 12px;
+        border-radius: 8px;
+      }
+      
+      .inline {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      
+      .footer .inline {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .btn-lg {
+        padding: 16px 14px;
+        font-size: 16px;
+        min-height: 50px;
+      }
+      
+      .kpis {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        display: grid;
+      }
+      
+      .kpi {
+        min-width: 0;
+        padding: 8px;
+      }
+      
+      .badge {
+        text-align: center;
+        justify-content: center;
+      }
+      
+      .tarifas {
+        padding: 8px 10px;
+      }
+      
+      .pill {
+        margin-right: 4px;
+        margin-top: 4px;
+        padding: 4px 8px;
+      }
+      
+      .toast {
+        right: 12px;
+        bottom: 12px;
+        max-width: calc(100vw - 24px);
+      }
+    }
+    
+    /* Ajustes específicos para dispositivos touch */
+    @media (hover: none) and (pointer: coarse) {
+      .btn:hover {
+        background: unset;
+      }
+      
+      .btn:active {
+        transform: scale(0.98);
+      }
+    }
+    
+    /* Contraste melhorado */
+    @media (prefers-contrast: high) {
+      :root {
+        --stroke: #3a4a5a;
+        --muted: #b0c0d0;
+      }
+    }
+    
+    /* Modo escuro forçado */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000;
+        --panel: #0a0a0a;
+      }
+    }
+    
+    /* Estilos para controles do mapa em dispositivos móveis */
+    @media (max-width: 768px) {
+      .mapboxgl-ctrl-group {
+        margin-bottom: 10px !important;
+        margin-right: 10px !important;
+      }
+      
+      .mapboxgl-ctrl-group button {
+        width: 44px !important;
+        height: 44px !important;
+        margin: 0 !important;
+      }
+      
+      .mapboxgl-ctrl-bottom-right {
+        bottom: 80px !important; /* Espaço para não sobrepor botões */
+      }
+    }
+    
+    /* Performance otimizada */
+    .card, .btn, .kpi {
+      will-change: auto;
+    }
+    
+    /* Estilos para feedback visual durante pesquisa */
+    input.searching {
+      border-color: #ffa500 !important;
+      background: linear-gradient(90deg, var(--accent), #2a3a4a, var(--accent));
+      background-size: 200% 100%;
+      animation: searchPulse 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes searchPulse {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    /* Melhorias no datalist */
+    input::-webkit-calendar-picker-indicator {
+      opacity: 0.6;
+      cursor: pointer;
+    }
+    
+    /* Estilos para lista de sugestões melhorada */
+    datalist {
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      border-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    /* Suporte a entrada de voz */
+    input[type="text"], input[type="tel"] {
+      -webkit-speech: continuous;
+    }
   </style>
 </head>
 <body>
@@ -79,23 +541,23 @@
             </div>
             <div class="field">
               <label for="telefone">Telefone (WhatsApp)</label>
-              <input id="telefone" name="telefone" inputmode="tel" placeholder="(44) xxxxx-xxxx" />
+              <input id="telefone" name="telefone" inputmode="tel" autocomplete="tel" placeholder="(44) xxxxx-xxxx" />
             </div>
           </div>
 
           <div class="field">
             <label for="origem">Onde você está</label>
             <div class="inline">
-              <input id="origem" name="origem" list="lista-origem" placeholder="Endereço de origem (Maringá)" required />
+              <input id="origem" name="origem" list="lista-origem" autocomplete="street-address" placeholder="Ex: Shopping Bosque dos Ipês, Centro, Av Brasil..." required />
               <datalist id="lista-origem"></datalist>
               <button type="button" class="btn btn-sm btn-ghost" id="btnGeo">Usar minha localização</button>
             </div>
-            <div class="hint">Digite e selecione na lista para precisão.</div>
+            <div class="hint">Digite endereços, referências ou pontos conhecidos de Maringá.</div>
           </div>
 
           <div class="field">
             <label for="destino">Para onde vai</label>
-            <input id="destino" name="destino" list="lista-destino" placeholder="Endereço de destino" required />
+            <input id="destino" name="destino" list="lista-destino" autocomplete="street-address" placeholder="Ex: UEM, Terminal, Praça da Catedral..." required />
             <datalist id="lista-destino"></datalist>
           </div>
 
@@ -117,14 +579,14 @@
             <div class="kpi"><small>Estimativa</small><strong id="kpiPreco">—</strong></div>
           </div>
 
-          <div class="footer">
-            <div class="badge" id="statusBadge" aria-live="polite">Pronto para traçar rota.</div>
-            <div class="inline">
-              <button type="button" id="btnRota" class="btn btn-lg btn-ghost">Traçar rota</button>
-              <button type="submit" class="btn btn-lg btn-primary">Enviar pedido</button>
-              <button type="button" id="btnLimpar" class="btn btn-lg btn-danger">Limpar</button>
-            </div>
+        <div class="footer">
+          <div class="badge" id="statusBadge" aria-live="polite">Pronto para traçar rota.</div>
+          <div class="inline">
+            <button type="button" id="btnRota" class="btn btn-lg btn-ghost">Traçar rota</button>
+            <button type="submit" class="btn btn-lg btn-primary">Enviar pedido</button>
+            <button type="button" id="btnLimpar" class="btn btn-lg btn-danger">Limpar</button>
           </div>
+        </div>
         </form>
       </section>
 
@@ -135,7 +597,7 @@
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" aria-live="polite"></div>
 
   <script>
     // ======= CONFIG: PREENCHA =======
@@ -164,8 +626,22 @@
         center: [-51.9333, -23.4205], // Maringá
         zoom: 12
       });
-      map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), "top-right");
-      map.addControl(new mapboxgl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: false }), "top-right");
+      
+      // Controles responsivos - posição baseada no tamanho da tela
+      const isMobile = window.innerWidth <= 768;
+      const controlPosition = isMobile ? 'bottom-right' : 'top-right';
+      
+      map.addControl(new mapboxgl.NavigationControl({ 
+        visualizePitch: true,
+        showCompass: true,
+        showZoom: true
+      }), controlPosition);
+      
+      map.addControl(new mapboxgl.GeolocateControl({ 
+        positionOptions: { enableHighAccuracy: true }, 
+        trackUserLocation: false,
+        showAccuracyCircle: false
+      }), controlPosition);
     }
 
     // Utils
@@ -183,36 +659,437 @@
       return s.includes(alvo);
     }
 
-    // Autocomplete
+    // Autocomplete melhorado com foco em Maringá
+    let searchTimeout = null;
+    
+    // Referências locais conhecidas de Maringá (expandida)
+    const referenciasMaringa = [
+      // Shoppings
+      { nome: "Shopping Bosque dos Ipês", coords: [-51.9392, -23.4205], categoria: "shopping" },
+      { nome: "Shopping Cidade Maringá", coords: [-51.9333, -23.4250], categoria: "shopping" },
+      { nome: "Shopping Catuaí Maringá", coords: [-51.9280, -23.4180], categoria: "shopping" },
+      { nome: "Shopping Avenida Center", coords: [-51.9350, -23.4220], categoria: "shopping" },
+      { nome: "Bosque dos Ipês", coords: [-51.9392, -23.4205], categoria: "shopping" },
+      { nome: "Cidade Maringá", coords: [-51.9333, -23.4250], categoria: "shopping" },
+      { nome: "Catuaí", coords: [-51.9280, -23.4180], categoria: "shopping" },
+      
+      // Parques e Bosques
+      { nome: "Parque do Ingá", coords: [-51.9380, -23.4100], categoria: "parque" },
+      { nome: "Bosque 2", coords: [-51.9420, -23.4150], categoria: "parque" },
+      { nome: "Parque Florestal", coords: [-51.9400, -23.4120], categoria: "parque" },
+      { nome: "Horto Florestal", coords: [-51.9400, -23.4120], categoria: "parque" },
+      { nome: "Lago do Jaboti", coords: [-51.9380, -23.4100], categoria: "parque" },
+      
+      // Praças
+      { nome: "Praça da Catedral", coords: [-51.9333, -23.4205], categoria: "praça" },
+      { nome: "Praça Napoleão Moreira da Silva", coords: [-51.9300, -23.4180], categoria: "praça" },
+      { nome: "Praça Raposo Tavares", coords: [-51.9380, -23.4220], categoria: "praça" },
+      { nome: "Praça Rocha Pombo", coords: [-51.9320, -23.4200], categoria: "praça" },
+      { nome: "Praça 7 de Setembro", coords: [-51.9340, -23.4210], categoria: "praça" },
+      
+      // Universidades e Escolas
+      { nome: "UEM - Universidade Estadual de Maringá", coords: [-51.9333, -23.4050], categoria: "universidade" },
+      { nome: "UEM", coords: [-51.9333, -23.4050], categoria: "universidade" },
+      { nome: "Universidade Estadual", coords: [-51.9333, -23.4050], categoria: "universidade" },
+      { nome: "UniCesumar", coords: [-51.9200, -23.4300], categoria: "universidade" },
+      { nome: "Cesumar", coords: [-51.9200, -23.4300], categoria: "universidade" },
+      
+      // Transporte
+      { nome: "Terminal Rodoviário de Maringá", coords: [-51.9390, -23.4280], categoria: "transporte" },
+      { nome: "Terminal Rodoviário", coords: [-51.9390, -23.4280], categoria: "transporte" },
+      { nome: "Rodoviária", coords: [-51.9390, -23.4280], categoria: "transporte" },
+      { nome: "Aeroporto Regional de Maringá", coords: [-51.8950, -23.4760], categoria: "transporte" },
+      { nome: "Aeroporto", coords: [-51.8950, -23.4760], categoria: "transporte" },
+      
+      // Saúde
+      { nome: "Hospital Universitário", coords: [-51.9320, -23.4080], categoria: "saúde" },
+      { nome: "HU", coords: [-51.9320, -23.4080], categoria: "saúde" },
+      { nome: "Santa Casa de Maringá", coords: [-51.9340, -23.4190], categoria: "saúde" },
+      { nome: "Santa Casa", coords: [-51.9340, -23.4190], categoria: "saúde" },
+      { nome: "Hospital Metropolitano", coords: [-51.9250, -23.4150], categoria: "saúde" },
+      
+      // Centro e Bairros
+      { nome: "Centro de Maringá", coords: [-51.9333, -23.4205], categoria: "centro" },
+      { nome: "Centro", coords: [-51.9333, -23.4205], categoria: "centro" },
+      { nome: "Zona 7", coords: [-51.9280, -23.4150], categoria: "bairro" },
+      { nome: "Jardim Alvorada", coords: [-51.9180, -23.4300], categoria: "bairro" },
+      { nome: "Vila Esperança", coords: [-51.9450, -23.4100], categoria: "bairro" },
+      { nome: "Novo Centro", coords: [-51.9200, -23.4180], categoria: "bairro" },
+      { nome: "Zona 1", coords: [-51.9350, -23.4180], categoria: "bairro" },
+      { nome: "Zona 2", coords: [-51.9320, -23.4200], categoria: "bairro" },
+      { nome: "Zona 3", coords: [-51.9300, -23.4220], categoria: "bairro" },
+      { nome: "Zona 4", coords: [-51.9280, -23.4180], categoria: "bairro" },
+      { nome: "Zona 5", coords: [-51.9320, -23.4160], categoria: "bairro" },
+      { nome: "Zona 6", coords: [-51.9300, -23.4140], categoria: "bairro" },
+      
+      // Avenidas Principais
+      { nome: "Avenida Brasil", coords: [-51.9333, -23.4205], categoria: "avenida" },
+      { nome: "Av Brasil", coords: [-51.9333, -23.4205], categoria: "avenida" },
+      { nome: "Avenida Colombo", coords: [-51.9300, -23.4100], categoria: "avenida" },
+      { nome: "Av Colombo", coords: [-51.9300, -23.4100], categoria: "avenida" },
+      { nome: "Avenida Herval", coords: [-51.9350, -23.4200], categoria: "avenida" },
+      { nome: "Av Herval", coords: [-51.9350, -23.4200], categoria: "avenida" },
+      
+      // Pontos de Referência
+      { nome: "Catedral Basílica", coords: [-51.9333, -23.4205], categoria: "religioso" },
+      { nome: "Catedral", coords: [-51.9333, -23.4205], categoria: "religioso" },
+      { nome: "Teatro Calil Haddad", coords: [-51.9340, -23.4200], categoria: "cultura" },
+      { nome: "Teatro Municipal", coords: [-51.9340, -23.4200], categoria: "cultura" },
+      { nome: "Mercadão", coords: [-51.9320, -23.4215], categoria: "comercio" },
+      { nome: "Mercado Municipal", coords: [-51.9320, -23.4215], categoria: "comercio" }
+    ];
+    
     async function sugestoesEndereco(q, datalistId){
-      if(!q || q.length<3) return;
-      try{
-        const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?autocomplete=true&limit=5&language=pt-BR&access_token=${MAPBOX_TOKEN}`;
-        const r=await fetch(url); const j=await r.json();
-        const list=document.getElementById(datalistId); list.innerHTML="";
-        (j.features||[]).forEach(f=>{ const opt=document.createElement("option"); opt.value=f.place_name; list.appendChild(opt); });
-      }catch{}
+      const input = datalistId === 'lista-origem' ? $("#origem") : $("#destino");
+      
+      if(!q || q.length < 2) {
+        document.getElementById(datalistId).innerHTML = "";
+        input.classList.remove('searching');
+        return;
+      }
+      
+      // Visual feedback de busca
+      input.classList.add('searching');
+      
+      // Debounce para evitar muitas requisições
+      if(searchTimeout) clearTimeout(searchTimeout);
+      
+      searchTimeout = setTimeout(async () => {
+        try{
+          const list = document.getElementById(datalistId); 
+          list.innerHTML = "";
+          
+          // 1. PRIMEIRO: Buscar nas referências locais
+          const refsEncontradas = buscarReferenciasLocais(q);
+          
+          // 2. SEGUNDO: Buscar na API do Mapbox com foco em Maringá
+          const resultadosMapbox = await buscarEnderecoMapbox(q);
+          
+          // 3. Combinar e ordenar resultados
+          const todosResultados = [...refsEncontradas, ...resultadosMapbox];
+          
+          if(todosResultados.length > 0) {
+            // Ordena: Maringá primeiro, depois por relevância
+            todosResultados.sort((a, b) => {
+              // Prioridade 1: Referências locais primeiro
+              if(a.isLocal && !b.isLocal) return -1;
+              if(!a.isLocal && b.isLocal) return 1;
+              
+              // Prioridade 2: Endereços de Maringá
+              const aTemMaringa = a.place_name?.toLowerCase().includes('maringá') || a.nome?.toLowerCase().includes('maringá');
+              const bTemMaringa = b.place_name?.toLowerCase().includes('maringá') || b.nome?.toLowerCase().includes('maringá');
+              
+              if(aTemMaringa && !bTemMaringa) return -1;
+              if(!aTemMaringa && bTemMaringa) return 1;
+              
+              // Prioridade 3: Distância de Maringá (para resultados da API)
+              if(a.distance !== undefined && b.distance !== undefined) {
+                return a.distance - b.distance;
+              }
+              
+              return 0;
+            });
+            
+            // Limita a 8 resultados
+            const resultadosLimitados = todosResultados.slice(0, 8);
+            
+            resultadosLimitados.forEach(resultado => {
+              const opt = document.createElement("option");
+              
+              if(resultado.isLocal) {
+                // Referência local
+                const icone = getIconeCategoria(resultado.categoria);
+                opt.value = resultado.nome;
+                opt.textContent = `${icone} ${resultado.nome}`;
+                opt.setAttribute('data-coordinates', JSON.stringify(resultado.coords));
+                opt.setAttribute('data-context', JSON.stringify({
+                  place_name: resultado.nome,
+                  center: resultado.coords,
+                  place_type: ['poi'],
+                  properties: { category: resultado.categoria }
+                }));
+              } else {
+                // Resultado da API Mapbox
+                let displayName = resultado.place_name;
+                const temMaringa = displayName.toLowerCase().includes('maringá');
+                
+                // Ícone baseado no tipo
+                let icone = '📍';
+                if(resultado.place_type?.includes('address')) icone = '🏠';
+                else if(resultado.place_type?.includes('poi')) icone = '📍';
+                else if(resultado.place_type?.includes('place')) icone = '🏙️';
+                
+                // Destaca se é de Maringá
+                if(temMaringa) {
+                  opt.value = resultado.place_name;
+                  opt.textContent = `${icone} ${displayName} ⭐`;
+                } else {
+                  opt.value = resultado.place_name;
+                  opt.textContent = `${icone} ${displayName}`;
+                }
+                
+                opt.setAttribute('data-coordinates', JSON.stringify(resultado.center));
+                opt.setAttribute('data-context', JSON.stringify(resultado));
+              }
+              
+              list.appendChild(opt);
+            });
+            
+            // Feedback visual de sucesso
+            input.style.borderColor = '#34c759';
+            setTimeout(() => {
+              input.style.borderColor = '';
+              input.classList.remove('searching');
+            }, 800);
+            
+          } else {
+            // Sem resultados
+            const opt = document.createElement("option");
+            opt.value = q;
+            opt.textContent = `❌ Nenhum resultado encontrado para "${q}"`;
+            opt.disabled = true;
+            list.appendChild(opt);
+            
+            input.style.borderColor = '#ff5252';
+            setTimeout(() => {
+              input.style.borderColor = '';
+              input.classList.remove('searching');
+            }, 1200);
+          }
+        } catch(error) {
+          console.error('Erro na busca de endereços:', error);
+          const list = document.getElementById(datalistId);
+          list.innerHTML = "";
+          const opt = document.createElement("option");
+          opt.value = q;
+          opt.textContent = `⚠️ Erro na busca. Tente novamente.`;
+          opt.disabled = true;
+          list.appendChild(opt);
+          
+          input.style.borderColor = '#ff5252';
+          setTimeout(() => {
+            input.style.borderColor = '';
+            input.classList.remove('searching');
+          }, 1500);
+        }
+      }, 300);
     }
-    $("#origem").addEventListener("input", e => sugestoesEndereco(e.target.value,"lista-origem"));
-    $("#destino").addEventListener("input", e => sugestoesEndereco(e.target.value,"lista-destino"));
+    
+    function buscarReferenciasLocais(query) {
+      const q = query.toLowerCase().trim();
+      return referenciasMaringa
+        .filter(ref => 
+          ref.nome.toLowerCase().includes(q) || 
+          ref.categoria.toLowerCase().includes(q)
+        )
+        .map(ref => ({
+          ...ref,
+          isLocal: true,
+          distance: 0 // Prioridade máxima
+        }));
+    }
+    
+    async function buscarEnderecoMapbox(query) {
+      const params = new URLSearchParams({
+        autocomplete: 'true',
+        limit: '6', // Reduzido para dar espaço às referências locais
+        language: 'pt-BR',
+        country: 'BR',
+        types: 'address,poi,place,locality,neighborhood',
+        proximity: '-51.9333,-23.4205', // Centro de Maringá
+        bbox: '-52.2,-23.8,-51.6,-23.1', // Bounding box de Maringá e região
+        access_token: MAPBOX_TOKEN
+      });
+      
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?${params}`;
+      const r = await fetch(url);
+      
+      if(!r.ok) throw new Error('Erro na API');
+      
+      const j = await r.json();
+      
+      if(j.features && j.features.length > 0) {
+        // Calcula distância de Maringá para cada resultado
+        return j.features.map(feature => {
+          const [lon, lat] = feature.center;
+          const distance = calcularDistanciaMaringa(lat, lon);
+          return {
+            ...feature,
+            distance,
+            isLocal: false
+          };
+        });
+      }
+      
+      return [];
+    }
+    
+    function calcularDistanciaMaringa(lat, lon) {
+      const maringaLat = -23.4205;
+      const maringaLon = -51.9333;
+      
+      const R = 6371; // Raio da Terra em km
+      const dLat = (lat - maringaLat) * Math.PI / 180;
+      const dLon = (lon - maringaLon) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(maringaLat * Math.PI / 180) * Math.cos(lat * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+    
+    function getIconeCategoria(categoria) {
+      const icones = {
+        shopping: '🛍️',
+        parque: '🌳',
+        praça: '🏛️',
+        universidade: '🎓',
+        transporte: '🚌',
+        saúde: '🏥',
+        centro: '🏢',
+        bairro: '🏘️',
+        avenida: '🛣️',
+        religioso: '⛪',
+        cultura: '🎭',
+        comercio: '🏪'
+      };
+      return icones[categoria] || '📍';
+    }
+    
+    // Event listeners melhorados para autocomplete
+    $("#origem").addEventListener("input", e => {
+      sugestoesEndereco(e.target.value, "lista-origem");
+    });
+    
+    $("#destino").addEventListener("input", e => {
+      sugestoesEndereco(e.target.value, "lista-destino");
+    });
+    
+    // Captura quando usuário seleciona uma opção do datalist
+    $("#origem").addEventListener("change", function(e) {
+      const selectedOption = document.querySelector(`#lista-origem option[value="${e.target.value}"]`);
+      if(selectedOption) {
+        const coords = selectedOption.getAttribute('data-coordinates');
+        const context = selectedOption.getAttribute('data-context');
+        if(coords) {
+          origemCoords = JSON.parse(coords);
+          origemContexto = context ? JSON.parse(context) : null;
+          posicionarMarcador("origem", origemCoords, e.target.value);
+          badge("Origem selecionada da lista.");
+          ajustarVisao();
+        }
+      } else {
+        // Se digitou algo que não está na lista, limpa coordenadas
+        origemCoords = null; 
+        origemContexto = null;
+      }
+    });
+    
+    $("#destino").addEventListener("change", function(e) {
+      const selectedOption = document.querySelector(`#lista-destino option[value="${e.target.value}"]`);
+      if(selectedOption) {
+        const coords = selectedOption.getAttribute('data-coordinates');
+        const context = selectedOption.getAttribute('data-context');
+        if(coords) {
+          destinoCoords = JSON.parse(coords);
+          destinoContexto = context ? JSON.parse(context) : null;
+          posicionarMarcador("destino", destinoCoords, e.target.value);
+          badge("Destino selecionado da lista.");
+          ajustarVisao();
+        }
+      } else {
+        // Se digitou algo que não está na lista, limpa coordenadas
+        destinoCoords = null; 
+        destinoContexto = null;
+      }
+    });
 
-    // Geo
+    // Geo melhorado
     $("#btnGeo").addEventListener("click", ()=>{
-      if(!navigator.geolocation){ toast("Geolocalização indisponível", false); return; }
+      if(!navigator.geolocation){ 
+        toast("Geolocalização não está disponível neste dispositivo", false); 
+        return; 
+      }
+      
+      badge("Obtendo sua localização...");
+      $("#btnGeo").disabled = true;
+      $("#btnGeo").textContent = "Localizando...";
+      
       navigator.geolocation.getCurrentPosition(async pos=>{
         const { latitude:lat, longitude:lon } = pos.coords;
-        origemCoords=[lon,lat];
+        origemCoords = [lon, lat];
+        
         try{
-          const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${lon},${lat}.json?language=pt-BR&access_token=${MAPBOX_TOKEN}`;
-          const r=await fetch(url); const j=await r.json();
-          const feat=j.features?.[0]; const place=feat?.place_name || `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
-          origemContexto = feat;
-          $("#origem").value=place;
-          posicionarMarcador("origem", origemCoords, place);
-          badge("Origem definida.");
+          // Busca reversa mais detalhada
+          const params = new URLSearchParams({
+            language: 'pt-BR',
+            types: 'address,poi,place',
+            limit: '1',
+            access_token: MAPBOX_TOKEN
+          });
+          
+          const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lon},${lat}.json?${params}`;
+          const r = await fetch(url); 
+          
+          if(!r.ok) throw new Error('Erro na geocodificação reversa');
+          
+          const j = await r.json();
+          const feat = j.features?.[0]; 
+          
+          if(feat) {
+            const place = feat.place_name;
+            origemContexto = feat;
+            $("#origem").value = place;
+            posicionarMarcador("origem", origemCoords, place);
+            badge("Localização atual definida como origem.");
+            toast("✅ Localização obtida com sucesso!");
+          } else {
+            // Fallback para coordenadas
+            const coordsText = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+            $("#origem").value = coordsText;
+            posicionarMarcador("origem", origemCoords, "Minha localização");
+            badge("Coordenadas definidas como origem.");
+            toast("📍 Localização obtida (coordenadas)");
+          }
+          
           ajustarVisao();
-        }catch{}
-      },()=> toast("Não foi possível obter localização", false),{enableHighAccuracy:true,timeout:10000});
+        } catch(error) {
+          console.error('Erro na geocodificação reversa:', error);
+          const coordsText = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+          $("#origem").value = coordsText;
+          posicionarMarcador("origem", origemCoords, "Minha localização");
+          badge("Coordenadas obtidas.");
+          toast("📍 Localização obtida (sem endereço)");
+        }
+      }, (error) => {
+        console.error('Erro de geolocalização:', error);
+        let errorMsg = "Não foi possível obter sua localização";
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMsg = "Permissão de localização negada";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMsg = "Localização indisponível";
+            break;
+          case error.TIMEOUT:
+            errorMsg = "Tempo limite para obter localização";
+            break;
+        }
+        
+        toast(errorMsg, false);
+        badge("Erro ao obter localização.");
+      }, {
+        enableHighAccuracy: true,
+        timeout: 15000, // 15 segundos
+        maximumAge: 300000 // Cache por 5 minutos
+      });
+      
+      // Restaura botão após 2 segundos independente do resultado
+      setTimeout(() => {
+        $("#btnGeo").disabled = false;
+        $("#btnGeo").textContent = "Usar minha localização";
+      }, 2000);
     });
 
     // Rota
@@ -222,25 +1099,120 @@
       badge("Calculando rota...");
       const origem = $("#origem").value.trim();
       const destino = $("#destino").value.trim();
-      if(!origem||!destino){ toast("Informe origem e destino", false); badge("Informe origem e destino."); return; }
+      
+      if(!origem || !destino){ 
+        toast("Por favor, informe origem e destino", false); 
+        badge("Informe origem e destino."); 
+        return; 
+      }
 
-      // Geocode completo para captar contexto de cidade
-      const geoO = await geocodeCompleto(origem);
-      const geoD = await geocodeCompleto(destino);
-      origemCoords = geoO?.center || null; destinoCoords = geoD?.center || null;
-      origemContexto = geoO; destinoContexto = geoD;
-      if(!origemCoords || !destinoCoords){ toast("Endereços inválidos", false); badge("Falha ao geocodificar."); return; }
+      // Se já tem coordenadas dos autocompletes, usa elas
+      let geoO = null, geoD = null;
+      
+      if(!origemCoords) {
+        badge("Geocodificando origem...");
+        geoO = await geocodeCompleto(origem);
+        if(!geoO) {
+          toast("❌ Endereço de origem não encontrado", false);
+          badge("Origem não encontrada.");
+          return;
+        }
+        origemCoords = geoO.center;
+        origemContexto = geoO;
+      }
+      
+      if(!destinoCoords) {
+        badge("Geocodificando destino...");
+        geoD = await geocodeCompleto(destino);
+        if(!geoD) {
+          toast("❌ Endereço de destino não encontrado", false);
+          badge("Destino não encontrado.");
+          return;
+        }
+        destinoCoords = geoD.center;
+        destinoContexto = geoD;
+      }
 
+      if(!origemCoords || !destinoCoords){ 
+        toast("Endereços inválidos ou não encontrados", false); 
+        badge("Falha ao encontrar endereços."); 
+        return; 
+      }
+
+      badge("Traçando rota...");
       await desenharRota(origemCoords, destinoCoords);
       atualizarKPIs();
     }
 
     async function geocodeCompleto(texto){
       try{
-        const url=`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(texto)}.json?limit=1&language=pt-BR&access_token=${MAPBOX_TOKEN}`;
-        const r=await fetch(url); const j=await r.json();
-        return j.features?.[0] || null;
-      }catch{ return null; }
+        // Primeiro, verifica se é uma referência local conhecida
+        const refLocal = referenciasMaringa.find(ref => 
+          ref.nome.toLowerCase() === texto.toLowerCase().trim()
+        );
+        
+        if(refLocal) {
+          return {
+            place_name: refLocal.nome,
+            center: refLocal.coords,
+            place_type: ['poi'],
+            properties: { category: refLocal.categoria }
+          };
+        }
+        
+        // Se não é referência local, busca na API com foco em Maringá
+        const params = new URLSearchParams({
+          limit: '5',
+          language: 'pt-BR',
+          country: 'BR',
+          types: 'address,poi,place,locality,neighborhood',
+          proximity: '-51.9333,-23.4205', // Proximidade com Maringá
+          bbox: '-52.2,-23.8,-51.6,-23.1', // Bounding box de Maringá e região
+          access_token: MAPBOX_TOKEN
+        });
+        
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(texto)}.json?${params}`;
+        const r = await fetch(url); 
+        
+        if(!r.ok) throw new Error('Erro na API de geocodificação');
+        
+        const j = await r.json();
+        
+        if(j.features && j.features.length > 0) {
+          // Prioriza resultados de Maringá
+          let bestMatch = j.features[0];
+          
+          // Busca especificamente por resultados em Maringá primeiro
+          for(let feature of j.features) {
+            const place_name = feature.place_name.toLowerCase();
+            
+            // Se contém "maringá", tem prioridade máxima
+            if(place_name.includes('maringá')) {
+              bestMatch = feature;
+              
+              // Se é endereço específico em Maringá, retorna imediatamente
+              if(feature.place_type.includes('address')) {
+                break;
+              }
+            }
+            // Se não tem nenhum resultado de Maringá ainda, prioriza por tipo
+            else if(!bestMatch.place_name.toLowerCase().includes('maringá')) {
+              if(feature.place_type.includes('address')) {
+                bestMatch = feature;
+              } else if(feature.place_type.includes('poi') && !bestMatch.place_type.includes('address')) {
+                bestMatch = feature;
+              }
+            }
+          }
+          
+          return bestMatch;
+        }
+        
+        return null;
+      } catch(error) {
+        console.error('Erro no geocodeCompleto:', error);
+        return null;
+      }
     }
 
     async function desenharRota([lonA,latA],[lonB,latB]){
@@ -382,7 +1354,58 @@
       badge("Pronto para traçar rota.");
     });
 
-    // Reforço: se o usuário alterar texto, força novo geocode
+    // Reajuste dos controles do mapa quando a tela é redimensionada
+    window.addEventListener('resize', () => {
+      if (map) {
+        map.resize();
+        
+        // Reposicionar controles baseado no novo tamanho
+        const isMobile = window.innerWidth <= 768;
+        const controls = document.querySelectorAll('.mapboxgl-ctrl-top-right, .mapboxgl-ctrl-bottom-right');
+        
+        // Se mudou de desktop para mobile ou vice-versa, recriar controles
+        if ((isMobile && document.querySelector('.mapboxgl-ctrl-top-right')) ||
+            (!isMobile && document.querySelector('.mapboxgl-ctrl-bottom-right'))) {
+          // Remove controles existentes
+          document.querySelectorAll('.mapboxgl-ctrl').forEach(ctrl => ctrl.remove());
+          
+          // Recriar controles na posição correta
+          const controlPosition = isMobile ? 'bottom-right' : 'top-right';
+          
+          map.addControl(new mapboxgl.NavigationControl({ 
+            visualizePitch: true,
+            showCompass: true,
+            showZoom: true
+          }), controlPosition);
+          
+          map.addControl(new mapboxgl.GeolocateControl({ 
+            positionOptions: { enableHighAccuracy: true }, 
+            trackUserLocation: false,
+            showAccuracyCircle: false
+          }), controlPosition);
+        }
+      }
+    });
+
+    // Validação de endereços em tempo real
+    function validarEndereco(input, tipo) {
+      const valor = input.value.trim();
+      if(valor.length < 3) return;
+      
+      // Visual feedback durante digitação
+      input.style.borderColor = '#ffa500'; // Laranja para "buscando"
+      
+      setTimeout(() => {
+        if(input.value === valor) { // Se ainda é o mesmo texto
+          input.style.borderColor = ''; // Volta ao normal
+        }
+      }, 1000);
+    }
+    
+    $("#origem").addEventListener("input", e => validarEndereco(e.target, "origem"));
+    $("#destino").addEventListener("input", e => validarEndereco(e.target, "destino"));
+
+    // Limpeza das coordenadas quando texto muda (já existia, mantendo)
     $("#origem").addEventListener("change",()=>{ origemCoords=null; origemContexto=null; });
     $("#destino").addEventListener("change",()=>{ destinoCoords=null; destinoContexto=null; });
   </script>
