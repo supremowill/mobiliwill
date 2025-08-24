@@ -483,6 +483,17 @@
       background: linear-gradient(90deg, var(--accent), #2a3a4a, var(--accent));
       background-size: 200% 100%;
       animation: searchPulse 1.5s ease-in-out infinite;
+      position: relative;
+    }
+    
+    input.searching::after {
+      content: "🔍";
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      opacity: 0.7;
     }
     
     @keyframes searchPulse {
@@ -490,10 +501,29 @@
       50% { background-position: 100% 50%; }
     }
     
+    /* Estados de sucesso e erro */
+    input.success {
+      border-color: #34c759 !important;
+      background: var(--accent);
+      animation: none;
+    }
+    
+    input.error {
+      border-color: #ff5252 !important;
+      background: var(--accent);
+      animation: none;
+    }
+    
     /* Melhorias no datalist */
     input::-webkit-calendar-picker-indicator {
       opacity: 0.6;
       cursor: pointer;
+    }
+    
+    /* Sugestões no datalist */
+    option[disabled] {
+      color: #666 !important;
+      font-style: italic;
     }
     
     /* Estilos para lista de sugestões melhorada */
@@ -548,17 +578,18 @@
           <div class="field">
             <label for="origem">Onde você está</label>
             <div class="inline">
-              <input id="origem" name="origem" list="lista-origem" autocomplete="street-address" placeholder="Ex: Shopping Bosque dos Ipês, Centro, Av Brasil..." required />
+              <input id="origem" name="origem" list="lista-origem" autocomplete="street-address" placeholder="Ex: Bosque, UEM, Centro, Zona 7..." required />
               <datalist id="lista-origem"></datalist>
-              <button type="button" class="btn btn-sm btn-ghost" id="btnGeo">Usar minha localização</button>
+              <button type="button" class="btn btn-sm btn-ghost" id="btnGeo">📍 Minha localização</button>
             </div>
-            <div class="hint">Digite endereços, referências ou pontos conhecidos de Maringá.</div>
+            <div class="hint">Digite referências, endereços ou pontos conhecidos de Maringá.</div>
           </div>
 
           <div class="field">
             <label for="destino">Para onde vai</label>
-            <input id="destino" name="destino" list="lista-destino" autocomplete="street-address" placeholder="Ex: UEM, Terminal, Praça da Catedral..." required />
+            <input id="destino" name="destino" list="lista-destino" autocomplete="street-address" placeholder="Ex: Terminal, Catuaí, HU, Aeroporto..." required />
             <datalist id="lista-destino"></datalist>
+            <div class="hint">Referências: Bosque, UEM, Centro, Terminal, HU, Santa Casa, Catedral.</div>
           </div>
 
           <div class="pair">
@@ -620,11 +651,23 @@
     // Mapa
     initMap();
     function initMap(){
+      console.log('Inicializando mapa...');
+      console.log('Token:', MAPBOX_TOKEN ? 'Definido' : 'Não definido');
+      console.log('Elemento map:', document.getElementById('map'));
+      
       map = new mapboxgl.Map({
         container: "map",
         style: "mapbox://styles/mapbox/streets-v12",
         center: [-51.9333, -23.4205], // Maringá
         zoom: 12
+      });
+      
+      map.on('load', function () {
+        console.log('Mapa carregado com sucesso!');
+      });
+      
+      map.on('error', function (e) {
+        console.error('Erro no mapa:', e);
       });
       
       // Controles responsivos - posição baseada no tamanho da tela
@@ -661,6 +704,80 @@
 
     // Autocomplete melhorado com foco em Maringá
     let searchTimeout = null;
+    let lastSearchQuery = '';
+    
+    // Aliases e sinônimos para busca mais intuitiva
+    const aliasesMaringa = {
+      // Shoppings - variações e apelidos
+      'bosque': ['Shopping Bosque dos Ipês', 'Bosque dos Ipês'],
+      'ipês': ['Shopping Bosque dos Ipês'],
+      'ipes': ['Shopping Bosque dos Ipês'],
+      'cidade': ['Shopping Cidade Maringá'],
+      'catuai': ['Shopping Catuaí Maringá', 'Catuaí'],
+      'catuaí': ['Shopping Catuaí Maringá'],
+      'avenida center': ['Shopping Avenida Center'],
+      'center': ['Shopping Avenida Center'],
+      
+      // Universidades
+      'uem': ['UEM - Universidade Estadual de Maringá', 'UEM'],
+      'universidade': ['UEM - Universidade Estadual de Maringá', 'UniCesumar'],
+      'estadual': ['UEM - Universidade Estadual de Maringá'],
+      'cesumar': ['UniCesumar', 'Cesumar'],
+      'unicesumar': ['UniCesumar'],
+      
+      // Transporte
+      'terminal': ['Terminal Rodoviário de Maringá', 'Terminal Rodoviário'],
+      'rodoviaria': ['Terminal Rodoviário de Maringá'],
+      'rodoviária': ['Terminal Rodoviário de Maringá'],
+      'aeroporto': ['Aeroporto Regional de Maringá'],
+      
+      // Saúde
+      'hu': ['Hospital Universitário'],
+      'hospital universitario': ['Hospital Universitário'],
+      'hospital universitário': ['Hospital Universitário'],
+      'santa casa': ['Santa Casa de Maringá'],
+      'metropolitano': ['Hospital Metropolitano'],
+      
+      // Parques
+      'inga': ['Parque do Ingá'],
+      'ingá': ['Parque do Ingá'],
+      'parque inga': ['Parque do Ingá'],
+      'parque ingá': ['Parque do Ingá'],
+      'bosque 2': ['Bosque 2'],
+      'horto': ['Parque Florestal', 'Horto Florestal'],
+      'florestal': ['Parque Florestal'],
+      'lago': ['Lago do Jaboti'],
+      'jaboti': ['Lago do Jaboti'],
+      
+      // Praças
+      'catedral': ['Praça da Catedral', 'Catedral Basílica'],
+      'praca catedral': ['Praça da Catedral'],
+      'praça catedral': ['Praça da Catedral'],
+      'napoleao': ['Praça Napoleão Moreira da Silva'],
+      'napoleão': ['Praça Napoleão Moreira da Silva'],
+      'raposo': ['Praça Raposo Tavares'],
+      'rocha pombo': ['Praça Rocha Pombo'],
+      
+      // Centro e zonas
+      'centro': ['Centro de Maringá', 'Centro'],
+      'zona 01': ['Zona 1'], 'zona 02': ['Zona 2'], 'zona 03': ['Zona 3'],
+      'zona 04': ['Zona 4'], 'zona 05': ['Zona 5'], 'zona 06': ['Zona 6'],
+      'zona 07': ['Zona 7'], 'zona 7': ['Zona 7'],
+      
+      // Avenidas
+      'brasil': ['Avenida Brasil', 'Av Brasil'],
+      'av brasil': ['Avenida Brasil'],
+      'colombo': ['Avenida Colombo', 'Av Colombo'],
+      'av colombo': ['Avenida Colombo'],
+      'herval': ['Avenida Herval', 'Av Herval'],
+      'av herval': ['Avenida Herval'],
+      
+      // Cultura
+      'teatro': ['Teatro Calil Haddad', 'Teatro Municipal'],
+      'mercadao': ['Mercadão', 'Mercado Municipal'],
+      'mercadão': ['Mercadão', 'Mercado Municipal'],
+      'mercado': ['Mercado Municipal']
+    };
     
     // Referências locais conhecidas de Maringá (expandida)
     const referenciasMaringa = [
@@ -799,8 +916,9 @@
               if(resultado.isLocal) {
                 // Referência local
                 const icone = getIconeCategoria(resultado.categoria);
+                const badge = resultado.isExactMatch ? '🎯' : '';
                 opt.value = resultado.nome;
-                opt.textContent = `${icone} ${resultado.nome}`;
+                opt.textContent = `${icone} ${resultado.nome} ${badge}`;
                 opt.setAttribute('data-coordinates', JSON.stringify(resultado.coords));
                 opt.setAttribute('data-context', JSON.stringify({
                   place_name: resultado.nome,
@@ -850,6 +968,7 @@
             opt.disabled = true;
             list.appendChild(opt);
             
+            // Feedback visual de erro
             input.style.borderColor = '#ff5252';
             setTimeout(() => {
               input.style.borderColor = '';
@@ -866,27 +985,295 @@
           opt.disabled = true;
           list.appendChild(opt);
           
+          // Feedback visual de erro
           input.style.borderColor = '#ff5252';
           setTimeout(() => {
             input.style.borderColor = '';
             input.classList.remove('searching');
           }, 1500);
         }
-      }, 300);
+      }, 300); // Aguarda 300ms antes de fazer a busca
+    }
+    
+    async function buscarResultadosInteligentes(query) {
+      const q = query.toLowerCase().trim();
+      let resultados = [];
+      
+      // 1. Busca por aliases e sinônimos
+      const resultadosAlias = buscarPorAlias(q);
+      resultados = resultados.concat(resultadosAlias);
+      
+      // 2. Busca fuzzy nas referências locais
+      const resultadosFuzzy = buscarReferenciasLocais(q);
+      resultados = resultados.concat(resultadosFuzzy);
+      
+      // 3. Busca na API Mapbox
+      if(q.length >= 2) {
+        const resultadosMapbox = await buscarEnderecoMapbox(q);
+        resultados = resultados.concat(resultadosMapbox);
+      }
+      
+      // 4. Ordena por relevância
+      return ordenarPorRelevancia(resultados, q);
+    }
+    
+    function buscarPorAlias(query) {
+      const resultados = [];
+      
+      for(const [alias, referencias] of Object.entries(aliasesMaringa)) {
+        if(alias === query || alias.includes(query) || query.includes(alias)) {
+          referencias.forEach(refNome => {
+            const refCompleta = referenciasMaringa.find(r => r.nome === refNome);
+            if(refCompleta) {
+              resultados.push({
+                ...refCompleta,
+                isLocal: true,
+                isExactMatch: alias === query,
+                relevancia: alias === query ? 100 : 80
+              });
+            }
+          });
+        }
+      }
+      
+      return resultados;
     }
     
     function buscarReferenciasLocais(query) {
-      const q = query.toLowerCase().trim();
       return referenciasMaringa
-        .filter(ref => 
-          ref.nome.toLowerCase().includes(q) || 
-          ref.categoria.toLowerCase().includes(q)
-        )
+        .map(ref => {
+          const score = calcularSimilaridade(query, ref.nome.toLowerCase());
+          return score > 0.3 ? {
+            ...ref,
+            isLocal: true,
+            relevancia: score * 70,
+            isPartialMatch: score > 0.6
+          } : null;
+        })
+        .filter(Boolean);
+    }
+    
+    function calcularSimilaridade(query, texto) {
+      // Busca exata
+      if(texto.includes(query)) return 1.0;
+      
+      // Busca por palavras
+      const palavrasQuery = query.split(' ');
+      const palavrasTexto = texto.split(' ');
+      let matches = 0;
+      
+      palavrasQuery.forEach(pq => {
+        if(palavrasTexto.some(pt => pt.includes(pq) || pq.includes(pt))) {
+          matches++;
+        }
+      });
+      
+      return matches / palavrasQuery.length;
+    }
+    
+    function ordenarPorRelevancia(resultados, query) {
+      return resultados.sort((a, b) => {
+        // Prioridade 1: Matches exatos
+        if(a.isExactMatch && !b.isExactMatch) return -1;
+        if(!a.isExactMatch && b.isExactMatch) return 1;
+        
+        // Prioridade 2: Referências locais
+        if(a.isLocal && !b.isLocal) return -1;
+        if(!a.isLocal && b.isLocal) return 1;
+        
+        // Prioridade 3: Relevância/score
+        if(a.relevancia && b.relevancia) {
+          return b.relevancia - a.relevancia;
+        }
+        
+        // Prioridade 4: Endereços de Maringá
+        const aMaringa = (a.place_name || a.nome || '').toLowerCase().includes('maringá');
+        const bMaringa = (b.place_name || b.nome || '').toLowerCase().includes('maringá');
+        
+        if(aMaringa && !bMaringa) return -1;
+        if(!aMaringa && bMaringa) return 1;
+        
+        // Prioridade 5: Distância
+        return (a.distance || 0) - (b.distance || 0);
+      });
+    }
+    
+    function removeDuplicatas(resultados) {
+      const vistos = new Set();
+      return resultados.filter(resultado => {
+        const key = (resultado.nome || resultado.place_name || '').toLowerCase();
+        if(vistos.has(key)) return false;
+        vistos.add(key);
+        return true;
+      });
+    }
+    
+    function getIconeByPlaceType(placeTypes) {
+      if(!placeTypes) return '📍';
+      
+      if(placeTypes.includes('address')) return '🏠';
+      if(placeTypes.includes('poi')) return '📍';
+      if(placeTypes.includes('place')) return '🏙️';
+      if(placeTypes.includes('locality')) return '🏘️';
+      if(placeTypes.includes('neighborhood')) return '🏘️';
+      
+      return '📍';
+    }
+    
+    function adicionarSugestoesAlternativas(list, query) {
+      const opt = document.createElement("option");
+      opt.value = '';
+      opt.textContent = `❌ Nenhum resultado para "${query}"`;
+      opt.disabled = true;
+      list.appendChild(opt);
+      
+      // Adiciona sugestões populares
+      adicionarSugestoesPopulares(list, true);
+    }
+    
+    function adicionarSugestoesPopulares(list, isAlternative = false) {
+      const populares = [
+        'Shopping Bosque dos Ipês',
+        'Centro de Maringá', 
+        'UEM',
+        'Terminal Rodoviário',
+        'Shopping Catuaí Maringá'
+      ];
+    // Função para buscar nas referências locais
+    function buscarReferenciasLocais(query) {
+      const q = query.toLowerCase().trim();
+      
+      return referenciasMaringa
+        .filter(ref => {
+          const nomeMatch = ref.nome.toLowerCase().includes(q);
+          const categoriaMatch = ref.categoria.toLowerCase().includes(q);
+          return nomeMatch || categoriaMatch;
+        })
         .map(ref => ({
           ...ref,
           isLocal: true,
-          distance: 0 // Prioridade máxima
+          isExactMatch: ref.nome.toLowerCase() === q
         }));
+    }
+
+    // Função para buscar no Mapbox com foco em Maringá
+    async function buscarEnderecoMapbox(query) {
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${MAPBOX_TOKEN}&proximity=-51.9386,-23.4205&bbox=-52.1,-23.6,-51.7,-23.2&country=BR&language=pt&limit=6`;
+      
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        return data.features.map(feature => ({
+          ...feature,
+          isLocal: false,
+          distance: calcularDistanciaParaMaringa(feature.center)
+        }));
+      } catch (error) {
+        console.error('Erro na busca Mapbox:', error);
+        return [];
+      }
+    }
+
+    // Função para calcular distância até Maringá
+    function calcularDistanciaParaMaringa(coords) {
+      const MARINGA_CENTER = [-51.9386, -23.4205];
+      const [lng, lat] = coords;
+      
+      const R = 6371; // Raio da Terra em km
+      const dLat = (lat - MARINGA_CENTER[1]) * Math.PI / 180;
+      const dLng = (lng - MARINGA_CENTER[0]) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(MARINGA_CENTER[1] * Math.PI / 180) * Math.cos(lat * Math.PI / 180) *
+                Math.sin(dLng/2) * Math.sin(dLng/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      
+      return R * c;
+    }
+
+    // Função para obter ícone baseado na categoria
+    function getIconeCategoria(categoria) {
+      const icones = {
+        'shopping': '🛍️',
+        'hospital': '🏥',
+        'escola': '🏫',
+        'universidade': '🎓',
+        'parque': '🌳',
+        'religioso': '⛪',
+        'restaurante': '🍽️',
+        'hotel': '🏨',
+        'transporte': '🚌',
+        'governo': '🏛️',
+        'aeroporto': '✈️',
+        'posto': '⛽',
+        'banco': '🏦',
+        'supermercado': '🛒'
+      };
+      
+      return icones[categoria] || '📍';
+    }
+      const sinonimos = {
+        'bosque': 'Shopping Bosque dos Ipês',
+        'ipes': 'Shopping Bosque dos Ipês',
+        'ipês': 'Shopping Bosque dos Ipês',
+        'ipé': 'Shopping Bosque dos Ipês',
+        'cidade': 'Shopping Cidade Maringá',
+        'catuai': 'Shopping Catuaí Maringá',
+        'catuaí': 'Shopping Catuaí Maringá',
+        'catuá': 'Shopping Catuaí Maringá',
+        'uem': 'UEM - Universidade Estadual de Maringá',
+        'universidade': 'UEM - Universidade Estadual de Maringá',
+        'estadual': 'UEM - Universidade Estadual de Maringá',
+        'terminal': 'Terminal Rodoviário de Maringá',
+        'rodoviaria': 'Terminal Rodoviário de Maringá',
+        'rodoviária': 'Terminal Rodoviário de Maringá',
+        'aeroporto': 'Aeroporto Regional de Maringá',
+        'airport': 'Aeroporto Regional de Maringá',
+        'hu': 'Hospital Universitário',
+        'hospital': 'Hospital Universitário',
+        'santa casa': 'Santa Casa de Maringá',
+        'santa': 'Santa Casa de Maringá',
+        'inga': 'Parque do Ingá',
+        'ingá': 'Parque do Ingá',
+        'parque': 'Parque do Ingá',
+        'catedral': 'Praça da Catedral',
+        'igreja': 'Catedral Basílica',
+        'centro': 'Centro de Maringá',
+        'downtown': 'Centro de Maringá',
+        'teatro': 'Teatro Calil Haddad',
+        'mercadao': 'Mercadão',
+        'mercadão': 'Mercadão',
+        'mercado': 'Mercado Municipal',
+        'shopping': 'Shopping Bosque dos Ipês',
+        'mall': 'Shopping Bosque dos Ipês'
+      };
+      
+      let resultados = [];
+      
+      // Busca por sinônimos primeiro
+      if(sinonimos[q]) {
+        const ref = referenciasMaringa.find(r => r.nome === sinonimos[q]);
+        if(ref) {
+          resultados.push({...ref, isLocal: true, distance: 0, isExactMatch: true});
+        }
+      }
+      
+      // Busca normal nas referências (evita duplicatas)
+      const encontradas = referenciasMaringa
+        .filter(ref => {
+          const jaEncontrada = resultados.some(r => r.nome === ref.nome);
+          return !jaEncontrada && (
+            ref.nome.toLowerCase().includes(q) || 
+            ref.categoria.toLowerCase().includes(q)
+          );
+        })
+        .map(ref => ({
+          ...ref,
+          isLocal: true,
+          distance: 0
+        }));
+      
+      return [...resultados, ...encontradas];
     }
     
     async function buscarEnderecoMapbox(query) {
@@ -963,6 +1350,39 @@
     
     $("#destino").addEventListener("input", e => {
       sugestoesEndereco(e.target.value, "lista-destino");
+    });
+    
+    // Melhorias na experiência de busca
+    $("#origem").addEventListener("focus", () => {
+      if(!$("#origem").value) {
+        // Mostra sugestões populares quando foca no campo vazio
+        const list = document.getElementById("lista-origem");
+        list.innerHTML = "";
+        
+        const populares = ['Centro', 'UEM', 'Bosque', 'Terminal', 'Catuaí'];
+        populares.forEach(nome => {
+          const opt = document.createElement("option");
+          opt.value = nome;
+          opt.textContent = `💡 ${nome}`;
+          list.appendChild(opt);
+        });
+      }
+    });
+    
+    $("#destino").addEventListener("focus", () => {
+      if(!$("#destino").value) {
+        // Mostra sugestões populares quando foca no campo vazio
+        const list = document.getElementById("lista-destino");
+        list.innerHTML = "";
+        
+        const populares = ['Aeroporto', 'HU', 'Santa Casa', 'Teatro', 'Mercadão'];
+        populares.forEach(nome => {
+          const opt = document.createElement("option");
+          opt.value = nome;
+          opt.textContent = `💡 ${nome}`;
+          list.appendChild(opt);
+        });
+      }
     });
     
     // Captura quando usuário seleciona uma opção do datalist
