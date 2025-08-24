@@ -603,6 +603,12 @@
             </div>
           </div>
 
+          <div class="field">
+            <label for="cpf">CPF do passageiro</label>
+            <input id="cpf" name="cpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required />
+            <div class="hint">Necessário para identificação durante a corrida.</div>
+          </div>
+
           <div class="kpis" id="kpis" hidden>
             <div class="kpi"><small>Distância</small><strong id="kpiDist">—</strong></div>
             <div class="kpi"><small>Duração</small><strong id="kpiTempo">—</strong></div>
@@ -1707,11 +1713,25 @@
       ev.preventDefault();
       const nome=$("#nome").value.trim();
       const telefone=$("#telefone").value.trim();
+      const cpf=$("#cpf").value.trim();
       const origemTxt=$("#origem").value.trim();
       const destinoTxt=$("#destino").value.trim();
       const quando=$("#quando").value;
       const observacoes=$("#observacoes").value.trim();
-      if(!origemTxt||!destinoTxt||!quando||!nome){ toast("Preencha os campos obrigatórios", false); return; }
+      
+      // Validações básicas
+      if(!origemTxt||!destinoTxt||!quando||!nome||!cpf){ 
+        toast("Preencha os campos obrigatórios", false); 
+        return; 
+      }
+
+      // Validação específica do CPF
+      const cpfSemMascara = cpf.replace(/\D/g, '');
+      if (!validarCPF(cpfSemMascara)) {
+        toast("❌ CPF inválido. Verifique os dados.", false);
+        $("#cpf").focus();
+        return;
+      }
 
       if(!rotaResumo){ await calcularERedesenharRota(); if(!rotaResumo){ toast("Calcule a rota antes de enviar", false); return; } }
 
@@ -1729,7 +1749,7 @@
       const fare = calcularPreco();
 
       const payload = {
-        nome, telefone,
+        nome, telefone, cpf: cpfSemMascara,
         origem: { endereco: origemTxt, lon:oLon, lat:oLat, em_maringa: contemCidadeAlvo(origemContexto?.place_name) },
         destino: { endereco: destinoTxt, lon:dLon, lat:dLat, em_maringa: contemCidadeAlvo(destinoContexto?.place_name) },
         quando: { raw: quando, ptBR: quandoBR },
@@ -1755,8 +1775,14 @@
       try{
         const resp = await fetch(N8N_WEBHOOK_URL,{ method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(payload) });
         if(!resp.ok) throw new Error("HTTP "+resp.status);
-        toast("Pedido enviado ao webhook.");
+        toast("✅ Pedido enviado com sucesso! Recarregando página...");
         badge("Enviado com sucesso.");
+        
+        // Aguarda 2 segundos para o usuário ver a confirmação, depois recarrega
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+        
       }catch(e){
         toast("Falha no webhook. Revise a URL.", false);
         badge("Erro no envio.");
@@ -1766,6 +1792,12 @@
     // Limpar
     $("#btnLimpar").addEventListener("click",()=>{
       $("#rideForm").reset();
+      
+      // Reset visual do CPF
+      const cpfInput = $("#cpf");
+      cpfInput.classList.remove('success', 'error');
+      cpfInput.style.borderColor = '';
+      
       $("#kpis").hidden=true; rotaResumo=null; origemCoords=null; destinoCoords=null;
       origemContexto=null; destinoContexto=null;
       if(map.getSource(routeId)){ map.removeLayer(routeId); map.removeSource(routeId); }
@@ -1828,6 +1860,84 @@
     // Limpeza das coordenadas quando texto muda (já existia, mantendo)
     $("#origem").addEventListener("change",()=>{ origemCoords=null; origemContexto=null; });
     $("#destino").addEventListener("change",()=>{ destinoCoords=null; destinoContexto=null; });
+
+    // ======= VALIDAÇÃO DE CPF =======
+    
+    // Função para formatar CPF com máscara
+    function formatarCPF(cpf) {
+      // Remove tudo que não é dígito
+      cpf = cpf.replace(/\D/g, '');
+      
+      // Aplica a máscara gradualmente
+      if (cpf.length <= 3) {
+        return cpf;
+      } else if (cpf.length <= 6) {
+        return cpf.replace(/(\d{3})(\d{0,3})/, '$1.$2');
+      } else if (cpf.length <= 9) {
+        return cpf.replace(/(\d{3})(\d{3})(\d{0,3})/, '$1.$2.$3');
+      } else {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, '$1.$2.$3-$4');
+      }
+    }
+
+    // Função para validar CPF
+    function validarCPF(cpf) {
+      // Remove formatação
+      cpf = cpf.replace(/\D/g, '');
+      
+      // Verifica se tem 11 dígitos
+      if (cpf.length !== 11) return false;
+      
+      // Verifica se todos os dígitos são iguais
+      if (/^(\d)\1{10}$/.test(cpf)) return false;
+      
+      // Valida primeiro dígito verificador
+      let soma = 0;
+      for (let i = 0; i < 9; i++) {
+        soma += parseInt(cpf.charAt(i)) * (10 - i);
+      }
+      let resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(9))) return false;
+      
+      // Valida segundo dígito verificador
+      soma = 0;
+      for (let i = 0; i < 10; i++) {
+        soma += parseInt(cpf.charAt(i)) * (11 - i);
+      }
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf.charAt(10))) return false;
+      
+      return true;
+    }
+
+    // Event listener para o campo CPF
+    $("#cpf").addEventListener("input", function(e) {
+      const input = e.target;
+      const cpfFormatado = formatarCPF(input.value);
+      
+      // Atualiza o valor com a máscara
+      input.value = cpfFormatado;
+      
+      // Remove classes de validação anteriores
+      input.classList.remove('success', 'error');
+      
+      // Só valida se o CPF estiver completo (11 dígitos)
+      const cpfSemMascara = cpfFormatado.replace(/\D/g, '');
+      if (cpfSemMascara.length === 11) {
+        if (validarCPF(cpfSemMascara)) {
+          input.classList.add('success');
+          input.style.borderColor = '#34c759';
+        } else {
+          input.classList.add('error');
+          input.style.borderColor = '#ff5252';
+        }
+      } else {
+        // CPF incompleto - remove feedback visual
+        input.style.borderColor = '';
+      }
+    });
   </script>
 </body>
 </html>
